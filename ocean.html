@@ -181,7 +181,10 @@
   </style>
 </head>
 <body>
-  <div class="ocean" aria-hidden="true"><div class="wave"></div></div>
+  <div class="ocean" aria-hidden="true">
+    <div class="wave"></div>
+  </div>
+
   <main>
     <p class="eyebrow">Dream Sequence · Ocean</p>
     <h1>The Deep Ocean</h1>
@@ -189,6 +192,7 @@
       Beneath the moonlit waves, the world grows quiet.
       Follow the silver tide into a sea of wonder.
     </p>
+
     <button
       class="dive-button"
       id="diveButton"
@@ -197,11 +201,13 @@
       aria-controls="destinations">
       Dive into the Ocean
     </button>
+
     <nav class="destinations" id="destinations" aria-label="Ocean journey" hidden>
       <a class="destination" href="forest.html">Follow the Light to the Forest</a>
       <a class="destination" href="index.html">Return to the Dream</a>
     </nav>
   </main>
+
   <script>
     const diveButton = document.getElementById("diveButton");
     const destinations = document.getElementById("destinations");
