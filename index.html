@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#020812">
+  <title>Dream Sequence</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: Georgia, "Times New Roman", serif;
+      color: #fff;
+      background: #020812;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { min-height: 100%; }
+
+    body {
+      min-height: 100vh;
+      min-height: 100svh;
+      margin: 0;
+      padding: 1.25rem;
+      display: grid;
+      place-items: center;
+      overflow-x: hidden;
+      background:
+        linear-gradient(to bottom, rgba(13, 22, 33, 0.52), rgba(5, 11, 18, 0.82)),
+        radial-gradient(circle at 50% 18%, rgba(177, 198, 219, 0.18), transparent 26%),
+        radial-gradient(circle at 50% 70%, rgba(206, 157, 126, 0.12), transparent 26%),
+        url("dream-sky.jpe") center 40% / cover fixed no-repeat,
+        #020812;
+    }
+
+    body:has(#starsScene:target) {
+      background:
+        linear-gradient(#02081280, #03101ad9),
+        url("star-bg.jpe") center 42% / cover fixed no-repeat,
+        #020812;
+    }
+
+    body:has(#oceanScene:target) {
+      background:
+        linear-gradient(#07111d80, #061522b8),
+        url("ocean-bg.jpe") center 48% / cover fixed no-repeat,
+        #061522;
+    }
+
+    body:has(#forestScene:target) {
+      background: linear-gradient(to bottom, #0c170d 0%, #142a17 40%, #09130e 100%);
+    }
+
+    body:has(#cloudsScene:target) {
+      background:
+        linear-gradient(180deg, #b8c8d9 0%, #d8bbc1 18%, #d67d60 44%, #d56d59 58%, #6e7c8b 100%);
+    }
+
+    #stars {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .star {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: #fff3cc;
+      box-shadow: 0 0 9px 2px #f7dfaa88;
+      animation: twinkle 3s ease-in-out infinite alternate;
+    }
+
+    .ocean-waves {
+      position: fixed;
+      z-index: 0;
+      inset: auto 0 0;
+      height: 25vh;
+      min-height: 120px;
+      overflow: hidden;
+      pointer-events: none;
+      opacity: 0;
+      background: linear-gradient(transparent, #092a3bd9 65%, #04131f);
+      transition: opacity .6s ease;
+    }
+
+    body:has(#oceanScene:target) .ocean-waves { opacity: 1; }
+
+    .wave {
+      position: absolute;
+      top: -25px;
+      left: -50%;
+      width: 200%;
+      height: 90px;
+      background: #70b9c84a;
+      clip-path: polygon(0 38%, 8% 34%, 16% 39%, 24% 51%, 32% 61%, 40% 62%, 48% 53%, 56% 41%, 64% 34%, 72% 38%, 80% 49%, 88% 60%, 96% 61%, 100% 55%, 100% 100%, 0 100%);
+      animation: wave 14s ease-in-out infinite alternate;
+    }
+
+    .clouds {
+      position: fixed;
+      z-index: 0;
+      bottom: -40px;
+      left: 0;
+      width: 100%;
+      height: 58vh;
+      overflow: hidden;
+      pointer-events: none;
+      opacity: 0;
+      filter: blur(6px);
+      transition: opacity .5s ease;
+    }
+
+    body:has(#cloudsScene:target) .clouds { opacity: 1; }
+    body:has(#cloudsScene:target) #stars { opacity: 0; }
+
+    .cloud {
+      position: absolute;
+      border-radius: 50%;
+      opacity: .95;
+      box-shadow: inset 0 0 30px #ffffff2e;
+    }
+
+    .cloud-one {
+      width: 520px;
+      height: 420px;
+      left: -80px;
+      bottom: -40px;
+      background: #f59e78e6;
+    }
+
+    .cloud-two {
+      width: 500px;
+      height: 360px;
+      left: 180px;
+      bottom: 10px;
+      background: #eeab92d1;
+    }
+
+    .cloud-three {
+      width: 440px;
+      height: 360px;
+      right: 190px;
+      bottom: 40px;
+      background: #ea9b80cc;
+    }
+
+    .cloud-four {
+      width: 560px;
+      height: 420px;
+      right: -40px;
+      bottom: -40px;
+      background: #e48d6edb;
+    }
+
+    .cloud-haze {
+      position: fixed;
+      z-index: 0;
+      top: 12%;
+      left: 0;
+      width: 100%;
+      height: 24%;
+      pointer-events: none;
+      opacity: 0;
+      background: linear-gradient(180deg, #ffc1a8bf, transparent);
+      filter: blur(26px);
+      transition: opacity .4s ease;
+    }
+
+    body:has(#cloudsScene:target) .cloud-haze { opacity: 1; }
+
+    main {
+      position: relative;
+      z-index: 1;
+      width: min(900px, 100%);
+      padding: clamp(2rem, 7vw, 5rem) clamp(1.25rem, 6vw, 4rem);
+      text-align: center;
+      border: 1px solid #ffffff38;
+      border-radius: 28px;
+      background: #07111fed;
+      box-shadow: 0 24px 80px #0009;
+      backdrop-filter: blur(7px);
+    }
+
+    .scene { display: none; }
+    #dreamScene { display: block; }
+    .scene:target { display: block; }
+    body:has(.scene:target:not(#dreamScene)) #dreamScene { display: none; }
+
+    .eyebrow {
+      margin: 0 0 .85rem;
+      color: #f3d37a;
+      font: 700 .75rem/1.5 system-ui, sans-serif;
+      letter-spacing: .28em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.5rem, 8vw, 5rem);
+      font-weight: 400;
+      line-height: 1.05;
+      text-wrap: balance;
+      text-shadow: 0 4px 24px #0009;
+    }
+
+    :focus-visible {
+      outline: 3px solid #fff;
+      outline-offset: 5px;
+    }
+
+    .description {
+      max-width: 700px;
+      margin: 1.3rem auto 0;
+      color: #f0f3f5;
+      font-size: clamp(1.05rem, 2.5vw, 1.35rem);
+      font-style: italic;
+      line-height: 1.7;
+    }
+
+    .choices {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: .75rem;
+      margin-top: 2rem;
+    }
+
+    .choices[hidden] { display: none; }
+
+    button,
+    .button {
+      min-height: 48px;
+      padding: .85rem 1.35rem;
+      border: 2px solid #f8e9c6;
+      border-radius: 999px;
+      background: #24314a;
+      color: #fff;
+      font: 700 .9rem/1.3 system-ui, sans-serif;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background .2s ease, transform .2s ease;
+    }
+
+    button:hover,
+    .button:hover {
+      background: #344866;
+      text-decoration: underline;
+      transform: translateY(-2px);
+    }
+
+    .button { display: inline-flex; align-items: center; justify-content: center; }
+
+    details { margin-top: 2rem; }
+
+    summary {
+      display: inline-flex;
+      min-height: 48px;
+      align-items: center;
+      justify-content: center;
+      padding: .85rem 1.35rem;
+      border: 2px solid #f8e9c6;
+      border-radius: 999px;
+      background: #24314a;
+      color: #fff;
+      font: 700 .9rem/1.3 system-ui, sans-serif;
+      cursor: pointer;
+      list-style: none;
+    }
+
+    summary::-webkit-details-marker { display: none; }
+    summary:hover { background: #344866; text-decoration: underline; }
+    details[open] .choices { margin-top: 1rem; }
+
+    .back-link { margin-top: 2rem; }
+
+    body:has(#forestScene:target) main {
+      width: min(1000px, 90vw);
+      padding: 1rem 1.25rem 3rem;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+      backdrop-filter: none;
+    }
+
+    .forest-welcome {
+      margin: 0 0 1.25rem;
+      color: #f3d37a;
+      font-size: clamp(2.3rem, 6vw, 4.3rem);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    body:has(#forestScene:target) .eyebrow {
+      color: #ffd66be6;
+      letter-spacing: .35em;
+    }
+
+    .forest-title {
+      margin: 0 0 1.25rem;
+      color: #f3d37a;
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    body:has(#forestScene:target) .description {
+      max-width: 820px;
+      margin: 0 auto 1.5rem;
+      color: #f5f7f2e6;
+    }
+
+    body:has(#forestScene:target) #forestScene > details > summary {
+      background: #f3d37a;
+      color: #102013;
+      border-color: #f3d37a;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+    }
+
+    .forest-choices .button {
+      border-color: #f3d37ab3;
+      background: #121f15;
+      border-radius: 12px;
+    }
+
+    body:has(#cloudsScene:target) main {
+      width: min(1000px, 90vw);
+      padding: 2rem 1.25rem 3.5rem;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+      backdrop-filter: none;
+    }
+
+    .cloud-page-title {
+      margin: 0 0 2rem;
+      color: #ffdb97;
+      font-size: clamp(2.3rem, 6vw, 4.3rem);
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .cloud-main-title {
+      margin-bottom: 1.25rem;
+      color: #ffdb97;
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    body:has(#cloudsScene:target) .eyebrow {
+      color: #ffe8c8;
+      letter-spacing: .35em;
+    }
+
+    body:has(#cloudsScene:target) .description {
+      max-width: 820px;
+      margin: 0 auto 1.5rem;
+      color: #fff6ef;
+    }
+
+    @keyframes twinkle {
+      from { opacity: .35; transform: scale(.8); }
+      to { opacity: 1; transform: scale(1.2); }
+    }
+
+    @keyframes wave {
+      from { transform: translateX(-3%) rotate(-1deg); }
+      to { transform: translateX(3%) rotate(1deg); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+
+    @media (max-width: 600px) {
+      body { padding: .75rem; }
+      main { padding: 2rem 1rem; }
+      .choices { flex-direction: column; }
+      .choices .button { width: 100%; }
+      .cloud { transform: scale(.72); transform-origin: bottom left; }
+      .cloud-three { right: 70px; }
+      .cloud-four { transform-origin: bottom right; }
+      body:has(#cloudsScene:target) main { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div id="stars" aria-hidden="true">
+    <span class="star" style="left:8%;top:12%"></span>
+    <span class="star" style="left:18%;top:35%"></span>
+    <span class="star" style="left:30%;top:18%"></span>
+    <span class="star" style="left:42%;top:8%"></span>
+    <span class="star" style="left:55%;top:28%"></span>
+    <span class="star" style="left:68%;top:14%"></span>
+    <span class="star" style="left:81%;top:32%"></span>
+    <span class="star" style="left:93%;top:10%"></span>
+    <span class="star" style="left:12%;top:62%"></span>
+    <span class="star" style="left:26%;top:78%"></span>
+    <span class="star" style="left:73%;top:66%"></span>
+    <span class="star" style="left:88%;top:82%"></span>
+  </div>
+
+  <div class="ocean-waves" aria-hidden="true"><div class="wave"></div></div>
+  <div class="cloud-haze" aria-hidden="true"></div>
+  <div class="clouds" aria-hidden="true">
+    <div class="cloud cloud-one"></div>
+    <div class="cloud cloud-two"></div>
+    <div class="cloud cloud-three"></div>
+    <div class="cloud cloud-four"></div>
+  </div>
+
+  <main>
+    <section class="scene" id="dreamScene">
+      <p class="eyebrow">Dream Sequence</p>
+      <h1 id="dreamTitle">Dream Starts</h1>
+      <p class="description">Night sky with moon and stars—glowing paths appear before you.</p>
+      <details>
+        <summary>Follow the Moon</summary>
+        <nav class="choices" aria-label="Choose a dream scene">
+          <a class="button" href="#starsScene">Visit the Stars</a>
+          <a class="button" href="#oceanScene">Visit the Ocean</a>
+          <a class="button" href="#forestScene">Visit the Forest</a>
+          <a class="button" href="#cloudsScene">Visit the Clouds</a>
+        </nav>
+      </details>
+    </section>
+
+    <section class="scene" id="starsScene">
+      <p class="eyebrow">Dream Sequence · Stars</p>
+      <h1>Under the Stars</h1>
+      <p class="description">Follow the moonlight through the quiet night sky, where every star marks a path into the dream.</p>
+      <a class="button back-link" href="#dreamScene">Back to the Dream</a>
+    </section>
+
+    <section class="scene" id="oceanScene">
+      <p class="eyebrow">Dream Sequence · Ocean</p>
+      <h1>The Deep Ocean</h1>
+      <p class="description">Beneath the moonlit waves, the world grows quiet. Follow the silver tide into a sea of wonder.</p>
+      <a class="button back-link" href="#dreamScene">Back to the Dream</a>
+    </section>
+
+    <section class="scene" id="forestScene">
+      <h1 class="forest-welcome">Welcome to the Forest</h1>
+      <p class="eyebrow">Forest Sequence</p>
+      <h2 class="forest-title">The Crystal Forest</h2>
+      <p class="description">
+        Golden light spills between ancient trees. A quiet pool mirrors the canopy,
+        while a winding path invites you deeper into the dream.
+      </p>
+      <details>
+        <summary>Explore the Forest</summary>
+        <nav class="choices forest-choices" aria-label="Choose your next destination">
+          <a class="button" href="#oceanScene">Follow the Light to the Ocean</a>
+          <a class="button" href="#dreamScene">Return to the Dream</a>
+        </nav>
+      </details>
+    </section>
+
+    <section class="scene" id="cloudsScene">
+      <h1 class="cloud-page-title">Clouds</h1>
+      <p class="eyebrow">Cloud Sequence</p>
+      <h2 class="cloud-main-title">The Dreaming Sky</h2>
+      <p class="description">
+        Pale light drifts across the horizon while the clouds gather like soft memories,
+        carrying the day toward a warm and quiet sunset.
+      </p>
+      <details>
+        <summary>Follow the Drift</summary>
+        <nav class="choices" aria-label="Choose your next destination">
+          <a class="button" href="#forestScene">Follow the Light to the Forest</a>
+          <a class="button" href="#dreamScene">Return to the Dream</a>
+        </nav>
+      </details>
+    </section>
+  </main>
+</body>
+</html>
